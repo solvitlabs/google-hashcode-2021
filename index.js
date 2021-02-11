@@ -95,7 +95,8 @@ hashcode.analyze = async ()=>{
                     }
                 }
             }
-            outputFile.write(`${numberOfTeamsServed}`)
+            // outputFile.write(`${numberOfTeamsServed}`)
+            console.log(`${numberOfTeamsServed} teams will be served`)
         }else{
             // Create an array with the number of ingredients of every pizza
             if(no_of_I_arr.indexOf(text[0]) === -1){
@@ -105,47 +106,47 @@ hashcode.analyze = async ()=>{
         }
         counter++;
     })
-    await once(rl, 'close');
-    hashcode.newInput(no_of_I_arr);
+    // await once(rl, 'close');
+    // hashcode.newInput(no_of_I_arr);
 }
 
-hashcode.newInput = (no_of_I_arr)=>{
-    console.log('...creating optimized input file');
+// hashcode.newInput = (no_of_I_arr)=>{
+//     console.log('...creating optimized input file');
 
-    const input = __dirname + '/input_files/'.concat(hashcode.inputFile)
-    const output = __dirname + '/input_files/custom/'.concat(hashcode.inputFile);
-    const outputFile = fs.createWriteStream(output);
-    const rl = readline.createInterface({
-        input: fs.createReadStream(input),
-        // output: process.stdout
-    });
-    // Handle any error that occurs on the write stream
-    outputFile.on('err', err => {
-        // handle error
-        console.log(err);
-    });
+//     const input = __dirname + '/input_files/'.concat(hashcode.inputFile)
+//     const output = __dirname + '/input_files/custom/'.concat(hashcode.inputFile);
+//     const outputFile = fs.createWriteStream(output);
+//     const rl = readline.createInterface({
+//         input: fs.createReadStream(input),
+//         // output: process.stdout
+//     });
+//     // Handle any error that occurs on the write stream
+//     outputFile.on('err', err => {
+//         // handle error
+//         console.log(err);
+//     });
     
-    // Once done writing, rename the output to be the input file name
-    outputFile.on('close', () => {
-        console.log('done processing...');
-    });
+//     // Once done writing, rename the output to be the input file name
+//     outputFile.on('close', () => {
+//         console.log('done processing...');
+//     });
 
-    let counter = 0;     
-    for(i=0; i < no_of_I_arr.length; i++){
-        rl.on('line', line=>{
-            console.log(counter, no_of_I_arr)
-            text = line;
-            if(counter == 0){
-                if(no_of_I_arr[i] == text[0]){
-                    //  write to our new file
-                    console.log('hi')
-                    outputFile.write(`${counter}\n`);
-                }
-            }
-            counter++;
-        })
-    }
-}
+//     let counter = 0;     
+//     for(i=0; i < no_of_I_arr.length; i++){
+//         rl.on('line', line=>{
+//             console.log(counter, no_of_I_arr)
+//             text = line;
+//             if(counter == 0){
+//                 if(no_of_I_arr[i] == text[0]){
+//                     //  write to our new file
+//                     console.log('hi')
+//                     outputFile.write(`${counter}\n`);
+//                 }
+//             }
+//             counter++;
+//         })
+//     }
+// }
 
 hashcode.analyze();
 
