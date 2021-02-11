@@ -5,6 +5,7 @@ const readline = require('readline');
 //  Container for all functions
 const hashcode = {};
 
+//  @analyze: How many teams will get served?
 hashcode.analyze = async ()=>{
     console.log('...analyzing input file')
     hashcode.inputFile = process.env.NODE_INPUT;
@@ -22,12 +23,10 @@ hashcode.analyze = async ()=>{
         console.log(err);
     });
     
-    // Once done writing, rename the output to be the input file name
     outputFile.on('close', () => {
         console.log('done processing...');
     });
     
-    // Read the file and replace any text that matches
     let counter = 0; 
     let counter2 = 0;
     let teamsCounter = 0;
