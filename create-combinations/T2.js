@@ -1,15 +1,11 @@
 // For a team of two
-var possibleCombinations = require('./possibleCombinations');
-
-const teamMembers = 2;
 // const letters = ["a", "b", "c", "d", "e"];
 // const letters = ["a", "b", "c"];
 const letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
-const totalPossibleCombinations = possibleCombinations(letters.length, teamMembers);
 
 var combinationsArr = [];
 //first loop to select letters
-for (let j = 0; j < totalPossibleCombinations; j++) {
+while (letters.length != 0) {
     var selectedLetter = letters[0];
     letters.splice(0, 1);
     //second loop to combine letters
@@ -18,5 +14,3 @@ for (let j = 0; j < totalPossibleCombinations; j++) {
     }
 }
 console.log(combinationsArr);
-console.log(totalPossibleCombinations);
-console.log(combinationsArr.length);
