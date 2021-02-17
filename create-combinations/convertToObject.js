@@ -1,7 +1,3 @@
-function idGenerator() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-}
-
 const ingredients = [
     ["onion", "pepper", "olive"],
     ["mushroom", "tomato", "basil"],
@@ -14,7 +10,7 @@ module.exports = () => {
     const newIngredients = [];
     for (let l = 0; l < ingredients.length; l++) {
         newIngredients.push({
-            id: idGenerator(),
+            id: newIngredients.length,
             value: ingredients[l],
         });
     }
