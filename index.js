@@ -1,12 +1,14 @@
 const { once } = require('events');
 const fs = require('fs');
+const { exit } = require('process');
 const readline = require('readline');
 
 //  Container for all functions
 const hashcode = {};
 
-hashcode.analyze = async ()=>{
-    console.log('...analyzing input file')
+//  @analyze: How many teams will get served?
+hashcode.teamsServed = async ()=>{
+    console.log('...calculating teams served')
     hashcode.inputFile = process.env.NODE_INPUT;
     const inputFile = __dirname + '/input_files/'.concat(hashcode.inputFile);
     const rl = readline.createInterface({
@@ -16,18 +18,7 @@ hashcode.analyze = async ()=>{
     
     const output = __dirname + '/output_files/'.concat(hashcode.inputFile)
     const outputFile = fs.createWriteStream(output);
-    // Handle any error that occurs on the write stream
-    outputFile.on('err', err => {
-        // handle error
-        console.log(err);
-    });
     
-    // Once done writing, rename the output to be the input file name
-    outputFile.on('close', () => {
-        console.log('done processing...');
-    });
-    
-    // Read the file and replace any text that matches
     let counter = 0; 
     let counter2 = 0;
     let teamsCounter = 0;
@@ -99,55 +90,80 @@ hashcode.analyze = async ()=>{
             console.log(`${numberOfTeamsServed} teams will be served`)
         }else{
             // Create an array with the number of ingredients of every pizza
-            if(no_of_I_arr.indexOf(text[0]) === -1){
-                no_of_I_arr.push(text.split(' ')[0])
-                no_of_I_arr.sort((a, b)=>{return b-a; })
-            }
+            // if(no_of_I_arr.indexOf(text.split(' ')[0]) === -1){
+            //     no_of_I_arr.push(text.split(' ')[0])
+            //     no_of_I_arr = no_of_I_arr.sort((a, b)=>{return b-a; })
+            // }
         }
         counter++;
-    })
-    // await once(rl, 'close');
-    // hashcode.newInput(no_of_I_arr);
+    }).on('err', err => {
+        console.log(err);
+    }).on('close', () => {
+        console.log('done processing...');
+    });
+    await once(rl, 'close');
+    hashcode.sortingThrough();
 }
 
-// hashcode.newInput = (no_of_I_arr)=>{
-//     console.log('...creating optimized input file');
+hashcode.sortingThrough = async ()=>{
+    console.log('...creating optimized input file using');
 
-//     const input = __dirname + '/input_files/'.concat(hashcode.inputFile)
-//     const output = __dirname + '/input_files/custom/'.concat(hashcode.inputFile);
-//     const outputFile = fs.createWriteStream(output);
-//     const rl = readline.createInterface({
-//         input: fs.createReadStream(input),
-//         // output: process.stdout
-//     });
-//     // Handle any error that occurs on the write stream
-//     outputFile.on('err', err => {
-//         // handle error
-//         console.log(err);
-//     });
-    
-//     // Once done writing, rename the output to be the input file name
-//     outputFile.on('close', () => {
-//         console.log('done processing...');
-//     });
+    const input = __dirname + '/input_files/'.concat(hashcode.inputFile);
+    const rl = readline.createInterface({
+        input: fs.createReadStream(input),
+        // output: process.stdout
+    });
+    let counter = -1;
+    let pizza_I = {};
+    let keys = [];
+    rl.on('line', (line)=>{
+        if(counter > -1){
+            pizza_I[line.split(' ')[0]] = line;
+        }
+        counter++;
+    }).on('close', (close)=>{
+        for (k in pizza_I){
+            if(pizza_I.hasOwnProperty(k)){
+                keys.push(k);
+            }
+        }
+        keys.sort((a,b)=>{
+            return b - a;
+        });
+    }).on('err', (err)=>{
+        console.log(err)
+    });
 
-//     let counter = 0;     
-//     for(i=0; i < no_of_I_arr.length; i++){
-//         rl.on('line', line=>{
-//             console.log(counter, no_of_I_arr)
-//             text = line;
-//             if(counter == 0){
-//                 if(no_of_I_arr[i] == text[0]){
-//                     //  write to our new file
-//                     console.log('hi')
-//                     outputFile.write(`${counter}\n`);
-//                 }
-//             }
-//             counter++;
-//         })
-//     }
-// }
+    await once(rl, 'close');
+    hashcode.newInput(pizza_I, keys, keys.length)
+    //  @TODO: next function...
+    // no_of_I_arr.forEach((element, index)=>{
+    //     let counter = -1;  
+    //     rl.on('line', (line) => {
+    //         if(counter > -1) {
+    //             text = line.split(' ')[0]
+    //             if (element == line.split(' ')[0]) {
+    //                 console.log(element, line.split(' ')[0]);
+    //                 //  write to our new file
+    //                 outputFile.write(`${counter} ${line}\n`);
+    //             }
+    //         }
+    //         counter++;
+    //     })
+    // })
 
-hashcode.analyze();
+}
+
+hashcode.newInput = (obj, sortedKeys, len)=>{
+    console.log('...creating an new input file')
+    const output = __dirname + '/input_files/custom/'.concat(hashcode.inputFile);
+    let writeStream = fs.createWriteStream(output);
+
+    for(i = 0; i < len; i++){
+        writeStream.write(`${obj[sortedKeys[i]]}\n`);
+    }
+}
+
+hashcode.teamsServed();
 
 
